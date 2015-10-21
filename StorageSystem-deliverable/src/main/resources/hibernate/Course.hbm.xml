@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="no.dh.storagesystem.model.Course" table="course" lazy="false">
+
+		<id name="id">
+			<generator class="native" />
+		</id>
+
+		<property name="courseCode" column="courseCode" not-null="true" unique="true"/>
+		<property name="name" column="name" not-null="true" unique="true"/>
+	
+		<set name="attendants" table="student_courses" lazy="false">
+			<key column="course_id" />
+			<many-to-many column="student_id"
+				class="no.dh.storagesystem.model.Student" />
+		</set>
+
+	</class>
+</hibernate-mapping>

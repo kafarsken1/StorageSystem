@@ -1,0 +1,4 @@
+no\dh\storagesystem\dao\hibernate\HibernateCourseDAO.class
+no\dh\storagesystem\dao\hibernate\HibernateDegreeDAO.class
+no\dh\storagesystem\dao\hibernate\HibernateStudentDAO.class
+no\dh\storagesystem\service\impl\DefaultStudentSystem.class
