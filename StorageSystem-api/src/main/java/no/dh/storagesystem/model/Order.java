@@ -1,43 +1,43 @@
 package no.dh.storagesystem.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * @author Thomas Iversen
- * @version $Id: Customer.java 20.10.2015 $
+ * @version $Id: Order.java 21.10.2015 $
  */
-@XmlRootElement(name = "customer")
-public class Customer
+@XmlRootElement(name = "order")
+public class Order
 {
     private int id;
 
     /**
      * Required and unique.
      */
+    private String orderNo;
+    
+    private Customer customer;
+    
+    private Date date;
 
-    private String name;
-    private String phone;   
-    private String address; 
+    private Set<Product> products = new HashSet<Product>();
 
-    @JsonIgnore
-    private Set<Order> orders = new HashSet<Order>();
 
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
 
-    public Customer()
+    public Order()
     {
     }
 
-    public Customer( String name )
+    public Order( String orderNo )
     {
-        this.name = name;
+        this.orderNo = orderNo;
     }
 
     // -------------------------------------------------------------------------
@@ -47,12 +47,7 @@ public class Customer
     @Override
     public int hashCode()
     {
-        final int prime = 31;
-        int result = 1;
-
-        result = result * prime + name.hashCode();
-
-        return result;
+        return orderNo.hashCode();
     }
 
     @Override
@@ -68,14 +63,14 @@ public class Customer
             return false;
         }
 
-        if ( !(o instanceof Customer) )
+        if ( !(o instanceof Order) )
         {
             return false;
         }
 
-        final Customer other = (Customer) o;
+        final Order other = (Order) o;
 
-        return name.equals( other.getName() );
+        return orderNo.equals( other.getOrderNo() );
     }
 
     // -------------------------------------------------------------------------
@@ -92,45 +87,46 @@ public class Customer
         this.id = id;
     }
 
-    public String getName()
+    public String getOrderNo()
     {
-        return name;
+        return orderNo;
     }
 
-    public void setName( String name )
+    public void setOrderNo( String orderNo )
     {
-        this.name = name;
-    }
-
-    public String getPhone()
-    {
-        return phone;
-    }
-
-    public void setPhone( String phone )
-    {
-        this.phone = phone;
+        this.orderNo = orderNo;
     }
     
-    public String getAddress()
+    public Customer getCustomer()
     {
-        return address;
-    }
-
-    public void setAddress( String address )
-    {
-        this.address = address;
+    	return customer;
     }
     
-    public Set<Order> getOrders()
+    public void setCustomer( Customer customer )
     {
-        //attendants = new HashSet<Student>( attendants ); // Rehash hack
-
-        return orders;
+    	this.customer = customer;
+    }
+    
+    public Date getDate()
+    {
+    	return date;
+    }
+    
+    public void setDate( Date date )
+    {
+    	this.date = date;
     }
 
-    public void setOrders( Set<Order> orders )
+    public Set<Product> getProducts()
     {
-        this.orders = orders;
+        //courses = new HashSet<Course>( courses ); // Rehash hack
+
+        return products;
     }
+
+    public void setProducts( Set<Product> products )
+    {
+        this.products = products;
+    }
+
 }

@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import no.dh.storagesystem.model.Student;
 import no.dh.storagesystem.model.Course;
 import no.dh.storagesystem.model.Degree;
-import no.dh.storagesystem.service.StudentSystem;
+import no.dh.storagesystem.service.StorageSystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ public class BaseController {
 	static Logger logger = Logger.getLogger(BaseController.class);
 
 	@Autowired
-	private StudentSystem studentSystem;
+	private StorageSystem studentSystem;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(ModelMap model) {

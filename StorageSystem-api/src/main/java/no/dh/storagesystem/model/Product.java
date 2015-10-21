@@ -1,43 +1,40 @@
 package no.dh.storagesystem.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Thomas Iversen
- * @version $Id: Customer.java 20.10.2015 $
+ * @version $Id: Product.java 21.10.2015 $
  */
-@XmlRootElement(name = "customer")
-public class Customer
+@XmlRootElement(name = "product")
+public class Product
 {
     private int id;
 
     /**
      * Required and unique.
      */
-
+    private String type;
     private String name;
-    private String phone;   
-    private String address; 
+    private int quantity;
+    private int pallets;
+    private int boxes;
+    private String notice;
+    private String shelfSpace;
 
-    @JsonIgnore
-    private Set<Order> orders = new HashSet<Order>();
 
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
 
-    public Customer()
+    public Product()
     {
     }
 
-    public Customer( String name )
+    public Product( String name, String type )
     {
-        this.name = name;
+    	this.name = name;
+        this.type = type;
     }
 
     // -------------------------------------------------------------------------
@@ -47,12 +44,7 @@ public class Customer
     @Override
     public int hashCode()
     {
-        final int prime = 31;
-        int result = 1;
-
-        result = result * prime + name.hashCode();
-
-        return result;
+        return type.hashCode();
     }
 
     @Override
@@ -68,12 +60,12 @@ public class Customer
             return false;
         }
 
-        if ( !(o instanceof Customer) )
+        if ( !(o instanceof Product) )
         {
             return false;
         }
 
-        final Customer other = (Customer) o;
+        final Product other = (Product) o;
 
         return name.equals( other.getName() );
     }
@@ -91,7 +83,17 @@ public class Customer
     {
         this.id = id;
     }
+    
+    public String getType()
+    {
+        return type;
+    }
 
+    public void setType( String type )
+    {
+        this.type = type;
+    }
+    
     public String getName()
     {
         return name;
@@ -101,36 +103,55 @@ public class Customer
     {
         this.name = name;
     }
-
-    public String getPhone()
+    
+    public int getQuantity()
     {
-        return phone;
+        return quantity;
     }
 
-    public void setPhone( String phone )
+    public void setQuantity( int quantity )
     {
-        this.phone = phone;
+        this.quantity = quantity;
     }
     
-    public String getAddress()
+    public int getPallets()
     {
-        return address;
+        return pallets;
     }
 
-    public void setAddress( String address )
+    public void setPallets( int pallets )
     {
-        this.address = address;
+        this.pallets = pallets;
     }
     
-    public Set<Order> getOrders()
+    public int getBoxes()
     {
-        //attendants = new HashSet<Student>( attendants ); // Rehash hack
-
-        return orders;
+        return boxes;
     }
 
-    public void setOrders( Set<Order> orders )
+    public void setBoxes( int boxes )
     {
-        this.orders = orders;
+        this.boxes = boxes;
     }
+    
+    public String getNotice()
+    {
+        return notice;
+    }
+
+    public void setNotice( String notice )
+    {
+        this.notice = notice;
+    }
+    
+    public String getShelfSpace()
+    {
+        return shelfSpace;
+    }
+
+    public void setShelfSpace( String shelfSpace )
+    {
+        this.shelfSpace = shelfSpace;
+    }
+
 }

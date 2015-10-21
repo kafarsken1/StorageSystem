@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
-import no.dh.storagesystem.service.StudentSystem;
+import no.dh.storagesystem.service.StorageSystem;
 import no.dh.storagesystem.dao.CourseDAO;
 import no.dh.storagesystem.dao.DegreeDAO;
 import no.dh.storagesystem.dao.StudentDAO;
@@ -13,7 +13,7 @@ import no.dh.storagesystem.model.Course;
 import no.dh.storagesystem.model.Degree;
 import no.dh.storagesystem.model.Student;
 
-public class DefaultStudentSystem implements StudentSystem {
+public class DefaultStudentSystem implements StorageSystem {
 	
 	static Logger logger = Logger.getLogger(DefaultStudentSystem.class);
 	
