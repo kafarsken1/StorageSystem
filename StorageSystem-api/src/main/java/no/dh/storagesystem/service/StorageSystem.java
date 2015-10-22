@@ -84,7 +84,7 @@ public interface StorageSystem
      * @param customerId the id of the customer.
      * @param orderId the id of the order.
      */
-    void removeOrderFromCustomer( int customerId, int ordertId );
+    void removeOrderFromCustomer( int customerId, int orderId );
 
     /**
      * Adds an order.
@@ -172,7 +172,7 @@ public interface StorageSystem
      * @param name the name of the product to add.
      * @return the generated id of the added product.
      */
-    int addProduct( String name );
+    int addProduct( String name, String type );
 
     /**
      * Updates a product.
