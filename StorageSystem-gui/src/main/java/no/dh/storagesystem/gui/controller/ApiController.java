@@ -2,17 +2,15 @@ package no.dh.storagesystem.gui.controller;
 
 import java.util.Collection;
 
-import no.dh.storagesystem.model.Course;
-import no.dh.storagesystem.model.Degree;
-import no.dh.storagesystem.model.Student;
+import no.dh.storagesystem.model.Customer;
+import no.dh.storagesystem.model.Order;
+import no.dh.storagesystem.model.Product;
 import no.dh.storagesystem.service.StorageSystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -20,15 +18,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ApiController {
 	
 	@Autowired
-	private StorageSystem studentSystem;
+	private StorageSystem storageSystem;
 	
-	@RequestMapping(value="student", method = RequestMethod.GET)
+	@RequestMapping(value="customer", method = RequestMethod.GET)
 	@ResponseBody
-	public Collection<Student> getAllStudents(){
-		return studentSystem.getAllStudents();
+	public Collection<Customer> getAllCustomers(){
+		return storageSystem.getAllCustomers();
 	}
 	
-	@RequestMapping(value="student/{student}/location", method = RequestMethod.GET)	 
+/*	@RequestMapping(value="student/{student}/location", method = RequestMethod.GET)	 
 	@ResponseBody
 	public Collection<Student> setStudentLocation(@PathVariable int student, 
 			@RequestParam(required=false, value="latitude") String latitude, 
@@ -36,17 +34,17 @@ public class ApiController {
 		studentSystem.setStudentLocation(student, latitude, longitude);
 		return studentSystem.getAllStudents();
 	}
-	
-	@RequestMapping(value="course", method = RequestMethod.GET)
+*/	
+	@RequestMapping(value="order", method = RequestMethod.GET)
 	@ResponseBody
-	public Collection<Course> getAllCourses(){
-		return studentSystem.getAllCourses();
+	public Collection<Order> getAllOrders(){
+		return storageSystem.getAllOrders();
 	}
 	
-	@RequestMapping(value="degree", method = RequestMethod.GET)
+	@RequestMapping(value="product", method = RequestMethod.GET)
 	@ResponseBody
-	public Collection<Degree> getAllDegrees(){
-		return studentSystem.getAllDegrees();
+	public Collection<Product> getAllProducts(){
+		return storageSystem.getAllProduct();
 	}
 
 }

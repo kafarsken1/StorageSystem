@@ -6,13 +6,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.Date;
 
 import no.dh.storagesystem.service.StorageSystem;
-import no.dh.storagesystem.model.Course;
 import no.dh.storagesystem.model.Customer;
-import no.dh.storagesystem.model.Degree;
-import no.dh.storagesystem.model.Student;
-
+import no.dh.storagesystem.model.Order;
+import no.dh.storagesystem.model.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +51,7 @@ public class StorageSystemTest {
 	}
 
 	@Test
-	public void testGetCourse() {
+	public void testGetCustomer() {
 		int id = storageSystem.addCustomer("User3");
 		Customer testCustomer = storageSystem.getCustomer(id);
 		assertEquals(testCustomer.getName(), "User3");
@@ -89,212 +88,239 @@ public class StorageSystemTest {
 	}
 
 	@Test
-	public void testDelCourse() {
-		int id = storageSystem.addCourse("INFXXX6", "X6");
-		storageSystem.delCourse(id);
-		assertNull(storageSystem.getCourse(id));
+	public void testDelCustomer() {
+		int id = storageSystem.addCustomer("User9");
+		storageSystem.delCustomer(id);
+		assertNull(storageSystem.getCustomer(id));
 	}
 
 	@Test
-	public void testAddAttendantToCourse() {
-		int courseId = storageSystem.addCourse("INF0003", "THREE");
-		int studentId = storageSystem.addStudent("John");
-		storageSystem.addAttendantToCourse(courseId, studentId);
-		Course testCourse = storageSystem.getCourse(courseId);
-		Student testStudent = storageSystem.getStudent(studentId);
+	public void testAddOrderToCustomer() {
+		int customerId = storageSystem.addCustomer("User10");
+		int orderId = storageSystem.addOrder("1234");
+		storageSystem.addOrderToCustomer(customerId, orderId);
+		Customer testCustomer = storageSystem.getCustomer(customerId);
+		Order testOrder = storageSystem.getOrder(orderId);
 
-		assertTrue(testCourse.getAttendants().contains(testStudent));
-		assertTrue(testStudent.getCourses().contains(testCourse));
+		assertTrue(testCustomer.getOrders().contains(testOrder));
+		assertEquals(testOrder.getCustomer().getId(), testCustomer.getId());
 	}
 
 	@Test
-	public void testRemoveAttendantFromCourse() {
-		int courseId = storageSystem.addCourse("INF0004", "FOUR");
-		int studentId = storageSystem.addStudent("Bob");
-		storageSystem.addAttendantToCourse(courseId, studentId);
-		Course testCourse = storageSystem.getCourse(courseId);
-		Student testStudent = storageSystem.getStudent(studentId);
-		storageSystem.removeAttendantFromCourse(courseId, studentId);
+	public void testRemoveOrderFromCustomer() {
+		int customerId = storageSystem.addCustomer("User11");
+		int orderId = storageSystem.addOrder("12345");
+		storageSystem.addOrderToCustomer(customerId, orderId);
+		Customer testCustomer = storageSystem.getCustomer(customerId);
+		Order testOrder = storageSystem.getOrder(orderId);
+		storageSystem.removeOrderFromCustomer(customerId, orderId);
 
-		assertFalse(testCourse.getAttendants().contains(testStudent));
-		assertFalse(testStudent.getCourses().contains(testCourse));
+		assertFalse(testCustomer.getOrders().contains(testOrder));
+		assertFalse(testOrder.getCustomer().equals(testCustomer));
 	}
 
 	@Test
-	public void testAddDegree() {
-		int id = storageSystem.addDegree("Tester1");
-		Degree testDegree = storageSystem.getDegree(id);
-		assertEquals(testDegree.getType(), "Tester1");
+	public void testAddOrder() {
+		int id = storageSystem.addOrder("1234");
+		Order testOrder = storageSystem.getOrder(id);
+		assertEquals(testOrder.getOrderNo(), "1234");
 	}
 
 	@Test
-	public void testUpdateDegree() {
-		int id = storageSystem.addDegree("Tester2");
-		storageSystem.updateDegree(id, "Tester2.1");
-		Degree testDegree = storageSystem.getDegree(id);
-		assertEquals(testDegree.getType(), "Tester2.1");
+	public void testUpdateOrder() {
+		int id = storageSystem.addOrder("12345");
+		int customerId = storageSystem.addCustomer("User12");
+		Customer customer = storageSystem.getCustomer(customerId);
+		Date date = new Date();
+		storageSystem.updateOrder(id, "54321", customer, date);
+		Order testOrder = storageSystem.getOrder(id);
+		assertEquals(testOrder.getOrderNo(), "54321");
+		assertEquals(testOrder.getCustomer(), customer);
+		assertEquals(testOrder.getDate(), date);
 	}
 
 	@Test
-	public void testGetDegree() {
-		int id = storageSystem.addDegree("D0");
-		Degree degree = storageSystem.getDegree(id);
-		assertEquals(degree.getType(), "D0");
+	public void testGetOrder() {
+		int id = storageSystem.addOrder("123456");
+		Order order = storageSystem.getOrder(id);
+		assertEquals(order.getOrderNo(), "123456");
 	}
 
 	@Test
-	public void testGetDegreeByType() {
-		storageSystem.addDegree("D1");
-		Degree degree = storageSystem.getDegreeByType("D1");
-		assertEquals(degree.getType(), "D1");
+	public void testGetOrderByOrderNo() {
+		storageSystem.addOrder("123456");
+		Order order = storageSystem.getOrderByOrderNo("123456");
+		assertEquals(order.getOrderNo(), "123456");
+	}
+	
+	@Test
+	public void testGetOrdersByCustomer() {
+		int cid = storageSystem.addCustomer("User13");
+		Customer customer = storageSystem.getCustomer(cid);
+		int id = storageSystem.addOrder("123456");
+		storageSystem.updateOrder(id, "123456", customer, null);
+		int id2 = storageSystem.addOrder("1234567");
+		storageSystem.updateOrder(id2, "1234567", customer, null);
+		int id3 = storageSystem.addOrder("12345678");
+		storageSystem.updateOrder(id3, "12345678", customer, null);
+		Order order1 = storageSystem.getOrder(id);
+		Order order2 = storageSystem.getOrder(id2);
+		Order order3 = storageSystem.getOrder(id3);
+		
+		Collection<Order> orders = storageSystem.getOrdersByCustomer(customer);
+		assertTrue(orders.contains(order1));
+		assertTrue(orders.contains(order2));
+		assertTrue(orders.contains(order3));
+	}
+	
+	@Test
+	public void testGetOrdersByDate() {
+		Date date = new Date();
+		int id = storageSystem.addOrder("123456");
+		storageSystem.updateOrder(id, "123456", null, date);
+		int id2 = storageSystem.addOrder("1234567");
+		storageSystem.updateOrder(id2, "1234567", null, date);
+		int id3 = storageSystem.addOrder("12345678");
+		storageSystem.updateOrder(id3, "12345678", null, date);
+		Order order1 = storageSystem.getOrder(id);
+		Order order2 = storageSystem.getOrder(id2);
+		Order order3 = storageSystem.getOrder(id3);
+		
+		Collection<Order> orders = storageSystem.getOrdersByDate(date);
+		assertTrue(orders.contains(order1));
+		assertTrue(orders.contains(order2));
+		assertTrue(orders.contains(order3));
 	}
 
 	@Test
-	public void testGetAllDegrees() {
-		int id = storageSystem.addDegree("D2");
-		int id1 = storageSystem.addDegree("D3");
-		int id2 = storageSystem.addDegree("D4");
-		Degree degree = storageSystem.getDegree(id);
-		Degree degree1 = storageSystem.getDegree(id1);
-		Degree degree2 = storageSystem.getDegree(id2);
+	public void testGetAllORders() {
+		int id = storageSystem.addOrder("123456");
+		int id1 = storageSystem.addOrder("1234567");
+		int id2 = storageSystem.addOrder("12345678");
+		Order order1 = storageSystem.getOrder(id);
+		Order order2 = storageSystem.getOrder(id1);
+		Order order3 = storageSystem.getOrder(id2);
 
-		Collection<Degree> degrees = storageSystem.getAllDegrees();
-		assertTrue(degrees.contains(degree));
-		assertTrue(degrees.contains(degree1));
-		assertTrue(degrees.contains(degree2));
+		Collection<Order> orders = storageSystem.getAllOrders();
+		assertTrue(orders.contains(order1));
+		assertTrue(orders.contains(order2));
+		assertTrue(orders.contains(order3));
 	}
 
 	@Test
 	public void testDelDegree() {
-		int id = storageSystem.addDegree("D5");
-		storageSystem.delDegree(id);
-		assertNull(storageSystem.getDegree(id));
+		int id = storageSystem.addOrder("0001");
+		storageSystem.delOrder(id);
+		assertNull(storageSystem.getOrder(id));
 	}
 
 	@Test
-	public void testAddRequiredCourseToDegree() {
-		int courseId = storageSystem.addCourse("INF0005", "FIVE");
-		int degreeId = storageSystem.addDegree("Tester3");
-		storageSystem.addRequiredCourseToDegree(degreeId, courseId);
-		Course testCourse = storageSystem.getCourse(courseId);
-		Degree testDegree = storageSystem.getDegree(degreeId);
+	public void testAddProductToOrder() {
+		int orderId = storageSystem.addOrder("0002");
+		int productId = storageSystem.addProduct("Product1", "envelope");
+		storageSystem.addProductToOrder(orderId, productId);
+		Order testOrder = storageSystem.getOrder(orderId);
+		Product testProduct = storageSystem.getProduct(productId);
 
-		assertTrue(testDegree.getRequiredCourses().contains(testCourse));
+		assertTrue(testOrder.getProducts().contains(testProduct));
 	}
 
 	@Test
-	public void testRemoveRequiredCourseFromDegree() {
-		int courseId = storageSystem.addCourse("INF0006", "SIX");
-		int degreeId = storageSystem.addDegree("Tester4");
-		storageSystem.addRequiredCourseToDegree(degreeId, courseId);
-		Course testCourse = storageSystem.getCourse(courseId);
-		Degree testDegree = storageSystem.getDegree(degreeId);
-		storageSystem.removeRequiredCourseFromDegree(degreeId, courseId);
+	public void testRemoveProductFromOrder() {
+		int orderId = storageSystem.addOrder("0003");
+		int productId = storageSystem.addProduct("Product2", "envelope");
+		storageSystem.addProductToOrder(orderId, productId);
+		Order testOrder = storageSystem.getOrder(orderId);
+		Product testProduct = storageSystem.getProduct(productId);
+		storageSystem.removeProductFromOrder(orderId, productId);
 
-		assertFalse(testDegree.getRequiredCourses().contains(testCourse));
+		assertFalse(testOrder.getProducts().contains(testProduct));
 	}
 
 	@Test
-	public void testAddStudent() {
-		int id = storageSystem.addStudent("Jane");
-		Student testStudent = storageSystem.getStudent(id);
-		assertEquals(testStudent.getName(), "Jane");
+	public void testAddProduct() {
+		int id = storageSystem.addProduct("Product3", "envelope");
+		Product testProduct = storageSystem.getProduct(id);
+		assertEquals(testProduct.getName(), "Product3");
+		assertEquals(testProduct.getName(), "envelope");
 	}
 
 	@Test
-	public void testUpdateStudent() {
-		int id = storageSystem.addStudent("Jane1");
-		storageSystem.updateStudent(id, "Jane Doe");
-		Student testStudent = storageSystem.getStudent(id);
-		assertEquals(testStudent.getName(), "Jane Doe");
+	public void testUpdateProduct() {
+		int id = storageSystem.addProduct("Product4", "envelope");
+		storageSystem.updateProduct(id, "Product5", "envelope", 1000, 2, 20, "red", "D5");
+		Product testProduct = storageSystem.getProduct(id);
+		assertEquals(testProduct.getName(), "Product5");
+		assertEquals(testProduct.getType(), "envelope");
+		assertEquals(testProduct.getQuantity(), 1000);
+		assertEquals(testProduct.getPallets(), 2);
+		assertEquals(testProduct.getBoxes(), 20);
+		assertEquals(testProduct.getNotice(), "red");
+		assertEquals(testProduct.getShelfSpace(), "D5");
 	}
 
 	@Test
-	public void testGetStudent() {
-		int id = storageSystem.addStudent("S0");
-		Student student = storageSystem.getStudent(id);
-		assertEquals(student.getName(), "S0");
+	public void testGetProduct() {
+		int id = storageSystem.addProduct("Product6", "envelope");
+		Product product = storageSystem.getProduct(id);
+		assertEquals(product.getName(), "Product6");
 	}
 
 	@Test
-	public void testGetStudentByName() {
-		int id = storageSystem.addStudent("S1");
-		Student student = storageSystem.getStudentByName("S1");
-		assertEquals(student.getName(), "S1");
-		assertEquals(student.getId(), id);
+	public void testGetProductByName() {
+		int id = storageSystem.addProduct("Product7", "envelope");
+		Product product = storageSystem.getProductByName("Product7");
+		assertEquals(product.getName(), "Product7");
+		assertEquals(product.getId(), id);
 	}
 	
 	@Test
-	public void testSetStudentLocation(){
-		int id = storageSystem.addStudent("Tracker");
-		storageSystem.setStudentLocation(id, "22", "33");
-		Student student = storageSystem.getStudent(id);
-		assertEquals(student.getLatitude(), "22");
-		assertEquals(student.getLongitude(), "33");
+	public void testGetProductByShelfSpace() {
+		int id = storageSystem.addProduct("Product8", "envelope");
+		storageSystem.updateProduct(id, "Product8", "envelope", 1000, 2, 20, "red", "D5");
+		Product product = storageSystem.getProductByShelfSpace("D5");
+		assertEquals(product.getName(), "Product8");
+		assertEquals(product.getId(), id);
+		assertEquals(product.getShelfSpace(), "D5");
+	}
+	
+	@Test
+	public void testGetProductsByType() {
+		int id = storageSystem.addProduct("Product8", "envelope");
+		int id1 = storageSystem.addProduct("Product9", "envelope");
+		int id2 = storageSystem.addProduct("Product10", "envelope");
+		Product product = storageSystem.getProduct(id);
+		Product product1 = storageSystem.getProduct(id1);
+		Product product2 = storageSystem.getProduct(id2);
+		
+		Collection<Product> products = storageSystem.getProductsByType("envelope");
+		assertTrue(products.contains(product));
+		assertTrue(products.contains(product1));
+		assertTrue(products.contains(product2));
 	}
 
 	@Test
-	public void testGetAllStudents() {
-		int id = storageSystem.addStudent("S2");
-		int id1 = storageSystem.addStudent("S3");
-		int id2 = storageSystem.addStudent("S4");
-		Student student = storageSystem.getStudent(id);
-		Student student1 = storageSystem.getStudent(id1);
-		Student student2 = storageSystem.getStudent(id2);
-
-		Collection<Student> students = storageSystem.getAllStudents();
-		assertTrue(students.contains(student));
-		assertTrue(students.contains(student1));
-		assertTrue(students.contains(student2));
+	public void testGetAllProducts() {
+		int id = storageSystem.addProduct("Product11", "envelope");
+		int id1 = storageSystem.addProduct("Product12", "envelope");
+		int id2 = storageSystem.addProduct("Product13", "envelope");
+		Product product = storageSystem.getProduct(id);
+		Product product1 = storageSystem.getProduct(id1);
+		Product product2 = storageSystem.getProduct(id2);
+		
+		Collection<Product> products = storageSystem.getAllProduct();
+		assertTrue(products.contains(product));
+		assertTrue(products.contains(product1));
+		assertTrue(products.contains(product2));
 	}
 
 	@Test
-	public void testDelStudent() {
-		int id = storageSystem.addStudent("S5");
-		storageSystem.delStudent(id);
-		assertNull(storageSystem.getStudent(id));
+	public void testDelProduct() {
+		int id = storageSystem.addProduct("Product14", "envelope");
+		storageSystem.delProduct(id);
+		assertNull(storageSystem.getProduct(id));
 	}
 
-	@Test
-	public void testAddDegreeToStudent() {
-		int studentId = storageSystem.addStudent("Mike");
-		int degreeId = storageSystem.addDegree("Tester5");
-		storageSystem.addDegreeToStudent(studentId, degreeId);
-		Student testStudent = storageSystem.getStudent(studentId);
-		Degree testDegree = storageSystem.getDegree(degreeId);
 
-		assertTrue(testStudent.getDegrees().contains(testDegree));
-	}
-
-	@Test
-	public void testRemoveDegreeFromStudent() {
-		int studentId = storageSystem.addStudent("Amanda");
-		int degreeId = storageSystem.addDegree("Tester6");
-		storageSystem.addDegreeToStudent(studentId, degreeId);
-		Student testStudent = storageSystem.getStudent(studentId);
-		Degree testDegree = storageSystem.getDegree(degreeId);
-		storageSystem.removeDegreeFromStudent(studentId, degreeId);
-
-		assertFalse(testStudent.getDegrees().contains(testDegree));
-	}
-
-	@Test
-	public void testStudentFulfillsDegreeRequirements() {
-		int degreeId = storageSystem.addDegree("Tester7");
-		int studentId = storageSystem.addStudent("Batman");
-		int studentId2 = storageSystem.addStudent("Robin");
-		int courseId = storageSystem.addCourse("INF0007", "SEVEN");
-		int courseId2 = storageSystem.addCourse("INF0008", "EIGHT");
-		storageSystem.addRequiredCourseToDegree(degreeId, courseId);
-		storageSystem.addRequiredCourseToDegree(degreeId, courseId2);
-		storageSystem.addAttendantToCourse(courseId, studentId);
-		storageSystem.addAttendantToCourse(courseId2, studentId);
-		storageSystem.addAttendantToCourse(courseId2, studentId2);
-
-		assertTrue(storageSystem.studentFulfillsDegreeRequirements(studentId,
-				degreeId));
-		assertFalse(storageSystem.studentFulfillsDegreeRequirements(studentId2,
-				degreeId));
-	}
 
 }

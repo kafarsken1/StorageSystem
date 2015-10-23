@@ -9,22 +9,22 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
          
-	<bean id="courseDAO"
-		class="no.dh.storagesystem.dao.hibernate.HibernateCourseDAO">
+	<bean id="customerDAO"
+		class="no.dh.storagesystem.dao.hibernate.HibernateCustomerDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
 
-	<bean id="studentDAO"
-		class="no.dh.storagesystem.dao.hibernate.HibernateStudentDAO">
+	<bean id="orderAO"
+		class="no.dh.storagesystem.dao.hibernate.HibernateOrderDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
 
-	<bean id="degreeDAO"
-		class="no.dh.storagesystem.dao.hibernate.HibernateDegreeDAO">
+	<bean id="productDAO"
+		class="no.dh.storagesystem.dao.hibernate.HibernateProductDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
@@ -32,14 +32,14 @@
 
 	<bean id="studentSystem"
 		class="no.dh.storagesystem.service.impl.DefaultStudentSystem">
-		<property name="courseDAO">
-			<ref bean="courseDAO" />
+		<property name="customerDAO">
+			<ref bean="customerDAO" />
 		</property>
-		<property name="studentDAO">
-			<ref bean="studentDAO" />
+		<property name="orderDAO">
+			<ref bean="orderDAO" />
 		</property>
-		<property name="degreeDAO">
-			<ref bean="degreeDAO" />
+		<property name="productDAO">
+			<ref bean="productDAO" />
 		</property>
 
 	</bean>
@@ -57,9 +57,9 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="mappingResources">
 			<list>
-				<value>hibernate/Course.hbm.xml</value>
-				<value>hibernate/Student.hbm.xml</value>
-				<value>hibernate/Degree.hbm.xml</value>
+				<value>hibernate/Customer.hbm.xml</value>
+				<value>hibernate/Order.hbm.xml</value>
+				<value>hibernate/Product.hbm.xml</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

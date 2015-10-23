@@ -3,9 +3,9 @@ package no.dh.storagesystem.gui.controller;
 import java.util.Collection;
 import org.apache.log4j.Logger;
 
-import no.dh.storagesystem.model.Student;
-import no.dh.storagesystem.model.Course;
-import no.dh.storagesystem.model.Degree;
+import no.dh.storagesystem.model.Customer;
+import no.dh.storagesystem.model.Order;
+import no.dh.storagesystem.model.Product;
 import no.dh.storagesystem.service.StorageSystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author Lars Kristian Roland Design note: In this case all the controller
- *         logic is placed into one large class. In most cases, it makes sense
- *         to structure the logic in different classes.
+ * @author Thomas Iversen
  */
 
 @Controller
@@ -28,7 +26,7 @@ public class BaseController {
 	static Logger logger = Logger.getLogger(BaseController.class);
 
 	@Autowired
-	private StorageSystem studentSystem;
+	private StorageSystem storageSystem;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(ModelMap model) {
@@ -43,27 +41,24 @@ public class BaseController {
 	@RequestMapping(value = "/init", method = RequestMethod.GET)
 	public String init(ModelMap model) {
 
-		if (studentSystem == null) {
+		if (storageSystem == null) {
 			model.addAttribute("message",
-					"Error filling in data. studentSystem == null");
+					"Error filling in data. storageSystem == null");
 		} else {
-			int john = studentSystem.addStudent("John McClane");
-			int jane = studentSystem.addStudent("Jane Fonda");
-			int inf5750 = studentSystem.addCourse("INF5750",
-					"Open Source Development");
-			int inf5761 = studentSystem.addCourse("INF5761",
-					"Health management information systems");
+			int john = storageSystem.addCustomer("John McClane");
+			int jane = storageSystem.addCustomer("Jane Fonda");
+			int o0001 = storageSystem.addOrder("0001");
+			int o0002 = storageSystem.addOrder("0002");
 
-			int master = studentSystem.addDegree("Master");
-			int bachelor = studentSystem.addDegree("Bachelor");
-			int phd = studentSystem.addDegree("PhD");
-
-			studentSystem.addAttendantToCourse(inf5750, john);
-			studentSystem.addAttendantToCourse(inf5750, jane);
-			studentSystem.addAttendantToCourse(inf5761, john);
-			studentSystem.addAttendantToCourse(inf5761, jane);
-
-			studentSystem.addRequiredCourseToDegree(master, inf5761);
+			int p1 = storageSystem.addProduct("Product 1", "envelope");
+			int p2 = storageSystem.addProduct("Product 2", "envelope");
+			int p3 = storageSystem.addProduct("Product 3", "envelope");
+			
+			storageSystem.addProductToOrder(o0001, p1);
+			storageSystem.addProductToOrder(o0001, p2);
+			storageSystem.addProductToOrder(o0002, p3);
+			storageSystem.addOrderToCustomer(john, o0001);
+			storageSystem.addOrderToCustomer(jane, o0002);
 
 			model.addAttribute("message", "Filled in data OK");
 		}
@@ -75,155 +70,137 @@ public class BaseController {
 
 	}
 
-	@RequestMapping(value = "/student", method = RequestMethod.GET)
-	public String listStudents(ModelMap model) {
+	@RequestMapping(value = "/customer", method = RequestMethod.GET)
+	public String listCustomers(ModelMap model) {
 		populateModel(model);
-		return "student";
+		return "customer";
 	}
 
-	@RequestMapping(value = "/student/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/customer/new", method = RequestMethod.POST)
 	public String createStudent(ModelMap model,
 			@RequestParam("name") String name) {
 
-		studentSystem.addStudent(name);
+		storageSystem.addCustomer(name);
 		populateModel(model);
-		return "student";
+		return "customer";
 	}
 
-	@RequestMapping(value = "/student/{studentId}/delete", method = RequestMethod.GET)
-	public String deleteStudent(ModelMap model,
-			@PathVariable("studentId") int studentId) {
+	@RequestMapping(value = "/customer/{customerId}/delete", method = RequestMethod.GET)
+	public String deleteCustomer(ModelMap model,
+			@PathVariable("customerId") int customerId) {
 
-		studentSystem.delStudent(studentId);
+		storageSystem.delCustomer(customerId);
 		populateModel(model);
-		return "student";
+		return "customer";
 	}
 
-	@RequestMapping(value = "/student/{studentId}/enrollcourse", method = RequestMethod.POST)
-	public String enrollCourse(ModelMap model,
-			@PathVariable("studentId") int studentId,
-			@RequestParam("courseid") int courseId) {
+	@RequestMapping(value = "/customer/{customerId}/order", method = RequestMethod.POST)
+	public String addCustomerToOrder(ModelMap model,
+			@PathVariable("customerId") int customerId,
+			@RequestParam("orderid") int orderId) {
 
-		logger.debug("Enrolling student " + studentId + " in course "
-				+ courseId);
-		studentSystem.addAttendantToCourse(courseId, studentId);
+		logger.debug("Adding an order to a customer " + customerId + " in order "
+				+ orderId);
+		storageSystem.addOrderToCustomer(customerId, orderId);
 		populateModel(model);
-		return "student";
+		return "customer";
 	}
 
-	@RequestMapping(value = "/student/{studentId}/unenrollcourse/{courseId}", method = RequestMethod.GET)
-	public String unenrollCourse(ModelMap model,
-			@PathVariable("studentId") int studentId,
-			@PathVariable("courseId") int courseId) {
+	@RequestMapping(value = "/customer/{customerId}/removeorder/{orderId}", method = RequestMethod.GET)
+	public String removeOrderFromCustomer(ModelMap model,
+			@PathVariable("customerId") int customerId,
+			@PathVariable("orderId") int orderId) {
 
-		logger.debug("Un-Enrolling student " + studentId + " in course "
-				+ courseId);
-		studentSystem.removeAttendantFromCourse(courseId, studentId);
+		logger.debug("Removing customer " + customerId + " from order "
+				+ orderId);
+		storageSystem.removeOrderFromCustomer(customerId, orderId);
 		populateModel(model);
-		return "student";
+		return "customer";
 	}
 
-	@RequestMapping(value = "/student/{studentId}/enrolldegree", method = RequestMethod.POST)
-	public String enrollDegree(ModelMap model,
-			@PathVariable("studentId") int studentId,
-			@RequestParam("degreeid") int degreeId) {
-
-		logger.debug("Enrolling student " + studentId + " in degree "
-				+ degreeId);
-		if (studentSystem
-				.studentFulfillsDegreeRequirements(studentId, degreeId)) {
-			studentSystem.addDegreeToStudent(studentId, degreeId);
-		} else {
-			model.addAttribute("message",
-					"Student does not fulfill course requirements. ");
-		}
-		populateModel(model);
-		return "student";
-	}
-
-	@RequestMapping(value = "/course", method = RequestMethod.GET)
-	public String listCourses(ModelMap model) {
+	@RequestMapping(value = "/order", method = RequestMethod.GET)
+	public String listOrders(ModelMap model) {
 
 		populateModel(model);
-		return "course";
+		return "order";
 	}
 
-	@RequestMapping(value = "/course/new", method = RequestMethod.POST)
-	public String createCourse(ModelMap model,
+	@RequestMapping(value = "/order/new", method = RequestMethod.POST)
+	public String createOrder(ModelMap model,
+			@RequestParam("orderNo") String orderNo) {
+
+		storageSystem.addOrder(orderNo);
+		populateModel(model);
+		return "order";
+	}
+
+	@RequestMapping(value = "/order/{orderId}/delete", method = RequestMethod.GET)
+	public String deleteOrder(ModelMap model,
+			@PathVariable("orderId") int orderId) {
+
+		storageSystem.delOrder(orderId);
+		populateModel(model);
+		return "order";
+	}
+	
+	@RequestMapping(value = "/order/{orderId}/product", method = RequestMethod.POST)
+	public String addProductToOrder(ModelMap model,
+			@PathVariable("orderId") int orderId,
+			@RequestParam("productid") int productId) {
+
+		logger.debug("Adding product " + productId + " to order "
+				+ orderId);
+		storageSystem.addProductToOrder(orderId, productId);
+		populateModel(model);
+		return "order";
+	}
+
+	@RequestMapping(value = "/order/{orderId}/removeproduct/{productId}", method = RequestMethod.GET)
+	public String removeProductFromOrder(ModelMap model,
+			@PathVariable("orderId") int orderId,
+			@PathVariable("productId") int productId) {
+
+		logger.debug("Removing product " + productId + " from order "
+				+ orderId);
+		storageSystem.removeProductFromOrder(orderId, productId);
+		populateModel(model);
+		return "order";
+	}
+
+	@RequestMapping(value = "/product", method = RequestMethod.GET)
+	public String listProducts(ModelMap model) {
+
+		model.addAttribute("message", "Products");
+		populateModel(model);
+		return "product";
+	}
+
+	@RequestMapping(value = "/product/new", method = RequestMethod.POST)
+	public String createProduct(ModelMap model, 
 			@RequestParam("name") String name,
-			@RequestParam("coursecode") String courseCode) {
+			@RequestParam("type") String type) {
 
-		studentSystem.addCourse(courseCode, name);
+		storageSystem.addProduct(name, type);
 		populateModel(model);
-		return "course";
+		return "product";
 	}
 
-	@RequestMapping(value = "/course/{courseId}/delete", method = RequestMethod.GET)
-	public String deleteCourse(ModelMap model,
-			@PathVariable("courseId") int courseId) {
+	@RequestMapping(value = "/product/{productId}/delete", method = RequestMethod.GET)
+	public String deleteProduct(ModelMap model,
+			@PathVariable("productId") int productId) {
 
-		studentSystem.delCourse(courseId);
+		storageSystem.delProduct(productId);
 		populateModel(model);
-		return "course";
+		return "product";
 	}
-
-	@RequestMapping(value = "/degree", method = RequestMethod.GET)
-	public String listDegrees(ModelMap model) {
-
-		model.addAttribute("message", "Degrees");
-		populateModel(model);
-		return "degree";
-	}
-
-	@RequestMapping(value = "/degree/new", method = RequestMethod.POST)
-	public String createDegree(ModelMap model, @RequestParam("type") String type) {
-
-		studentSystem.addDegree(type);
-		populateModel(model);
-		return "degree";
-	}
-
-	@RequestMapping(value = "/degree/{degreeId}/delete", method = RequestMethod.GET)
-	public String deleteDegree(ModelMap model,
-			@PathVariable("degreeId") int degreeId) {
-
-		studentSystem.delDegree(degreeId);
-		populateModel(model);
-		return "degree";
-	}
-
-	@RequestMapping(value = "/degree/{degreeId}/requiredcourse", method = RequestMethod.POST)
-	public String addRequiredCourse(ModelMap model,
-			@PathVariable("degreeId") int degreeId,
-			@RequestParam("courseid") int courseId) {
-
-		logger.debug("Adding required course " + courseId + " in degree "
-				+ degreeId);
-		studentSystem.addRequiredCourseToDegree(degreeId, courseId);
-		populateModel(model);
-		return "degree";
-	}
-
-	@RequestMapping(value = "/degree/{degreeId}/removerequiredcourse/{courseId}", method = RequestMethod.GET)
-	public String removeRequiredCourse(ModelMap model,
-			@PathVariable("degreeId") int degreeId,
-			@PathVariable("courseId") int courseId) {
-
-		logger.debug("Removing required course " + courseId + " in degree "
-				+ degreeId);
-		studentSystem.removeRequiredCourseFromDegree(degreeId, courseId);
-		populateModel(model);
-		return "degree";
-	}
-
 	
 	private ModelMap populateModel(ModelMap model) {
-		Collection<Student> students = studentSystem.getAllStudents();
-		model.addAttribute("students", students);
-		Collection<Course> courses = studentSystem.getAllCourses();
-		model.addAttribute("courses", courses);
-		Collection<Degree> degrees = studentSystem.getAllDegrees();
-		model.addAttribute("degrees", degrees);
+		Collection<Customer> customers = storageSystem.getAllCustomers();
+		model.addAttribute("customers", customers);
+		Collection<Order> orders = storageSystem.getAllOrders();
+		model.addAttribute("orders", orders);
+		Collection<Product> products = storageSystem.getAllProduct();
+		model.addAttribute("products", products);
 
 		return model;
 	}
