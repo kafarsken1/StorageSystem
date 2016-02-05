@@ -5,21 +5,30 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import no.dh.storagesystem.service.StorageSystem;
 import no.dh.storagesystem.dao.CustomerDAO;
 import no.dh.storagesystem.dao.OrderDAO;
 import no.dh.storagesystem.dao.ProductDAO;
 import no.dh.storagesystem.model.Customer;
+import no.dh.storagesystem.model.Item;
 import no.dh.storagesystem.model.Order;
 import no.dh.storagesystem.model.Product;
 
+@Service("storageSystem")
 public class DefaultStorageSystem implements StorageSystem {
 	
 	static Logger logger = Logger.getLogger(DefaultStorageSystem.class);
 	
+	@Autowired
     private CustomerDAO customerDAO;
+	
+	@Autowired
 	private OrderDAO orderDAO;
+	
+	@Autowired
 	private ProductDAO productDAO;
 		
 	public void setCustomerDAO(CustomerDAO customerDAO){
@@ -96,8 +105,8 @@ public class DefaultStorageSystem implements StorageSystem {
 		Customer customer = customerDAO.getCustomer(customerId);
 		Order order = orderDAO.getOrder(orderId);
 		customer.getOrders().remove(order);
-		orderDAO.delOrder(order);
 		customerDAO.saveCustomer(customer);
+		orderDAO.delOrder(order);
 	}
 
 	@Override
@@ -109,6 +118,7 @@ public class DefaultStorageSystem implements StorageSystem {
 	@Override
 	public void updateOrder(int orderId, String orderNo, Customer customer, Date date) {
 		Order order = orderDAO.getOrder(orderId);
+		order.setOrderNo(orderNo);
 		order.setCustomer(customer);
 		order.setDate(date);
 		orderDAO.saveOrder(order);
@@ -142,28 +152,37 @@ public class DefaultStorageSystem implements StorageSystem {
 	@Override
 	public void delOrder(int orderId) {
 		Order order = orderDAO.getOrder(orderId);
-		Customer customer = customerDAO.getCustomer(order.getCustomer().getId());
+	/*	Customer customer = customerDAO.getCustomer(order.getCustomer().getId());
 		if(customer.getOrders().contains(order)){
 			customer.getOrders().remove(order);
 			customerDAO.saveCustomer(customer);
-		}
+		}*/
 		orderDAO.delOrder(order);
 	}
 
 	@Override
-	public void addProductToOrder(int orderId, int productId) {
+	public void addItemToOrder(int orderId, int productId, int quantity) {
 		Order order = orderDAO.getOrder(orderId);
 		Product product = productDAO.getProduct(productId);
-		order.getProducts().add(product);
-		System.out.println(order.getProducts().toArray().length);
+		Item item = new Item(product, quantity);
+		order.getItems().add(item);
+		System.out.println(order.getItems().toArray().length);
 		orderDAO.saveOrder(order);
 	}
 
 	@Override
-	public void removeProductFromOrder(int orderId, int productId) {
+	public void removeItemFromOrder(int orderId, int productId) {
 		Order order = orderDAO.getOrder(orderId);
 		Product product = productDAO.getProduct(productId);
-		order.getProducts().remove(product);
+		
+		Iterator<Item> i = order.getItems().iterator();
+		while(i.hasNext()){
+			Item item = (Item) i.next();
+			if(item.getProduct().equals(product)){
+				order.getItems().remove(item);
+			}
+		}	
+			
 		orderDAO.saveOrder(order);
 	}
 
@@ -216,13 +235,17 @@ public class DefaultStorageSystem implements StorageSystem {
 	public void delProduct(int productId) {
 		Product product = productDAO.getProduct(productId);
 		
-		Iterator<Order> i = orderDAO.getAllOrders().iterator();
-		while(i.hasNext()){
-			Order o = (Order) i.next();
-			if(o.getProducts().contains(product)){
-				o.getProducts().remove(product);
-				orderDAO.saveOrder(o);
-			}
+		Iterator<Order> o = orderDAO.getAllOrders().iterator();
+		while(o.hasNext()){
+			Order order = (Order) o.next();
+			Iterator<Item> i = order.getItems().iterator();
+			while(i.hasNext()){
+				Item item = (Item) i.next();
+				if(item.getProduct().equals(product)){
+					order.getItems().remove(item);
+					orderDAO.saveOrder(order);
+				}
+			}		
 		}
 		productDAO.delProduct(product);
 	}

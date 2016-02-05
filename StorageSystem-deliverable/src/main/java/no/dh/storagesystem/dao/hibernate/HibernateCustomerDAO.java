@@ -4,47 +4,39 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import no.dh.storagesystem.dao.CustomerDAO;
 import no.dh.storagesystem.model.Customer;
 
-public class HibernateCustomerDAO implements CustomerDAO{
+@Repository("customerDAO")
+public class HibernateCustomerDAO extends BaseDAO implements CustomerDAO{
 	
 	static Logger logger = Logger.getLogger(HibernateCustomerDAO.class);
 	
-    private SessionFactory sessionFactory;
-
-    public void setSessionFactory( SessionFactory sessionFactory )
-    {
-        this.sessionFactory = sessionFactory;
-    }
-
 	@Override
 	public int saveCustomer(Customer customer) {
-		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(customer);
-		session.flush();
+		getSession().saveOrUpdate(customer);
+		getSession().flush();
 		return customer.getId();
 	}
 
 	@Override
 	public Customer getCustomer(int id) {
-		return (Customer) sessionFactory.getCurrentSession().get( Customer.class, id );
+		return (Customer) getSession().get( Customer.class, id );
 	}
 
 	@Override
 	public Customer getCustomerByName(String name) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class);
+		Criteria criteria = getSession().createCriteria(Customer.class);
 		criteria.add(Restrictions.eq("name", name));
 		return (Customer) criteria.uniqueResult();
 	}
 
 	@Override
 	public Customer getCustomerByPhone(String phone) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class);
+		Criteria criteria = getSession().createCriteria(Customer.class);
 		criteria.add(Restrictions.eq("phone", phone));
 		return (Customer) criteria.uniqueResult();
 	}
@@ -52,13 +44,13 @@ public class HibernateCustomerDAO implements CustomerDAO{
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Customer> getAllCustomers() {
-		return sessionFactory.getCurrentSession().createCriteria(Customer.class).list();
+		return getSession().createCriteria(Customer.class).list();
 	}
 
 	@Override
 	public void delCustomer(Customer customer) {
-		sessionFactory.getCurrentSession().delete(customer);
-		sessionFactory.getCurrentSession().flush();
+		getSession().delete(customer);
+		getSession().flush();
 	}
 
 }

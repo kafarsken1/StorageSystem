@@ -19,10 +19,8 @@
 				class="no.dh.storagesystem.model.Product" />
 		</set>
 
-		<set name="customer" table="customer_order" lazy="false">
-			<key column="order_id" />
-			<many-to-many column="customer_id"
-				class="no.dh.storagesystem.model.Customer" />
-		</set>
+		<many-to-one name="customer" class="no.dh.storagesystem.model.Customer" fetch="select">
+				<column name="CUSTOMER_ID" not-null="false"/>
+		</many-to-one>
 	</class>
 </hibernate-mapping>

@@ -156,7 +156,7 @@ public interface StorageSystem
      * @param orderId the id of the order.
      * @param productId the id of the product.
      */
-    void addProductToOrder( int orderId, int productId );
+    void addItemToOrder( int orderId, int productId, int quantity );
 
     /**
      * Removes a product from an order.
@@ -164,7 +164,7 @@ public interface StorageSystem
      * @param orderId the id of the order.
      * @param productId the id of the product.
      */
-    void removeProductFromOrder( int orderId, int productId );
+    void removeItemFromOrder( int orderId, int productId );
 
     /**
      * Adds a product.
@@ -226,6 +226,14 @@ public interface StorageSystem
      * 
      * @param productId the id of the product to delete.
      */
+        
     void delProduct( int productId );
+    
+    /**
+     * Returns files with a specific product.
+     * 
+     * @return files or an empty Collection if no files exists.
+     */
+    Collection<Order> getFilesByProduct( Product product);
 
 }

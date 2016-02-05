@@ -10,10 +10,11 @@
 	<name>Storage System Root Project</name>
 
 	<properties>
-		<spring.version>3.2.3.RELEASE</spring.version>
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<spring.version>4.0.6.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 		<jdk.version>1.7</jdk.version>
-		<hibernate.version>3.5.1-Final</hibernate.version>
+		<hibernate.version>4.3.6.Final</hibernate.version>
 	</properties>
 
 	<modules>
@@ -34,6 +35,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>

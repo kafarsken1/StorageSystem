@@ -4,12 +4,29 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Thomas Iversen
  * @version $Id: Order.java 21.10.2015 $
  */
+
+@Entity
+@Table(name = "order", catalog = "test", 
+uniqueConstraints = @UniqueConstraint(columnNames = "ORDERNO"))
 @XmlRootElement(name = "order")
 public class Order
 {
@@ -24,7 +41,7 @@ public class Order
     
     private Date date;
 
-    private Set<Product> products = new HashSet<Product>();
+    private Set<Item> items = new HashSet<Item>();
 
 
     // -------------------------------------------------------------------------
@@ -76,7 +93,10 @@ public class Order
     // -------------------------------------------------------------------------
     // Setters and getters
     // -------------------------------------------------------------------------
-
+    
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ORDER_ID", unique = true, nullable = false)
     public int getId()
     {
         return id;
@@ -87,6 +107,7 @@ public class Order
         this.id = id;
     }
 
+    @Column(name = "ORDERNO", unique = true, nullable = false, length = 20)
     public String getOrderNo()
     {
         return orderNo;
@@ -97,6 +118,8 @@ public class Order
         this.orderNo = orderNo;
     }
     
+    @ManyToOne//(cascade=CascadeType.ALL)
+	//@JoinColumn(name = "ORDER_ID", nullable = false, insertable=false, updatable=false)
     public Customer getCustomer()
     {
     	return customer;
@@ -107,6 +130,8 @@ public class Order
     	this.customer = customer;
     }
     
+    @Column(name = "ORDER_DATE", columnDefinition="DATETIME")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDate()
     {
     	return date;
@@ -117,16 +142,21 @@ public class Order
     	this.date = date;
     }
 
-    public Set<Product> getProducts()
+    @ElementCollection(fetch = javax.persistence.FetchType.LAZY)
+    @CollectionTable( 
+            name = "item_products", 
+            joinColumns = @JoinColumn( name = "ORDER_ID" ) 
+       )
+    public Set<Item> getItems()
     {
         //courses = new HashSet<Course>( courses ); // Rehash hack
 
-        return products;
+        return items;
     }
 
-    public void setProducts( Set<Product> products )
+    public void setItems( Set<Item> items )
     {
-        this.products = products;
+        this.items = items;
     }
 
 }

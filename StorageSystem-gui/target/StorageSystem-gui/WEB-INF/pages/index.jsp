@@ -15,8 +15,8 @@
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
-      <script src="/assignment2-gui/js/html5shiv.js"></script>
-      <script src="/assignment2-gui/js/respond.min.js"></script>
+      <script src="/StorageSystem-gui/js/html5shiv.js"></script>
+      <script src="/StorageSystem-gui/js/respond.min.js"></script>
     <![endif]-->
 <style>
 html,body {
@@ -44,7 +44,7 @@ html,body {
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/assignment2-gui/">Student system</a>
+				<a class="navbar-brand" href="/StorageSystem-gui/">Student system</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">

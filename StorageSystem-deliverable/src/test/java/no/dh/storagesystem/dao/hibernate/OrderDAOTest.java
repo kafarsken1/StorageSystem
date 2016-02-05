@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
+import no.dh.storagesystem.dao.CustomerDAO;
 import no.dh.storagesystem.dao.OrderDAO;
 import no.dh.storagesystem.model.Customer;
 import no.dh.storagesystem.model.Order;
@@ -20,8 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderDAOTest {
 
-	@Autowired
+	@Autowired( required = true )
 	private OrderDAO orderDAO;
+	
+	@Autowired( required = true )
+	private CustomerDAO customerDAO;
 	
 	private Order testOrder;
 	private Customer testCustomer;
@@ -32,6 +36,7 @@ public class OrderDAOTest {
 	public void init(){
 		testOrder = new Order("1234");
 		testCustomer = new Customer("Arne");
+		customerDAO.saveCustomer(testCustomer);
 		testOrder.setCustomer(testCustomer);
 		date = new Date();
 		testOrder.setDate(date);

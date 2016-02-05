@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CustomerDAOTest {
 
-	@Autowired
+	@Autowired( required = true )
 	private CustomerDAO customerDAO;
 	
 	private Customer testCustomer;

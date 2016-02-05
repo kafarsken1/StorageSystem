@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import no.dh.storagesystem.service.StorageSystem;
 import no.dh.storagesystem.model.Customer;
+import no.dh.storagesystem.model.Item;
 import no.dh.storagesystem.model.Order;
 import no.dh.storagesystem.model.Product;
 import org.junit.Before;
@@ -21,11 +23,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/storagesystem/beans.xml" })
+@ContextConfiguration(locations = {"classpath*:META-INF/storagesystem/beans.xml"})
 @Transactional
 public class StorageSystemTest {
 
-	@Autowired
+	@Autowired( required = true )
 	StorageSystem storageSystem;
 
 	@Before
@@ -116,7 +118,7 @@ public class StorageSystemTest {
 		storageSystem.removeOrderFromCustomer(customerId, orderId);
 
 		assertFalse(testCustomer.getOrders().contains(testOrder));
-		assertFalse(testOrder.getCustomer().equals(testCustomer));
+		assertNull(storageSystem.getOrder(orderId));
 	}
 
 	@Test
@@ -208,7 +210,7 @@ public class StorageSystemTest {
 	}
 
 	@Test
-	public void testDelDegree() {
+	public void testDelOrder() {
 		int id = storageSystem.addOrder("0001");
 		storageSystem.delOrder(id);
 		assertNull(storageSystem.getOrder(id));
@@ -218,23 +220,30 @@ public class StorageSystemTest {
 	public void testAddProductToOrder() {
 		int orderId = storageSystem.addOrder("0002");
 		int productId = storageSystem.addProduct("Product1", "envelope");
-		storageSystem.addProductToOrder(orderId, productId);
+		storageSystem.addItemToOrder(orderId, productId, 20);
 		Order testOrder = storageSystem.getOrder(orderId);
 		Product testProduct = storageSystem.getProduct(productId);
-
-		assertTrue(testOrder.getProducts().contains(testProduct));
+		
+		Iterator<Item> i = testOrder.getItems().iterator();
+		while(i.hasNext()){
+			Item item = (Item) i.next();
+			if(item.getProduct().equals(testProduct)){
+				assertTrue(true);
+			}
+		}
+		
 	}
 
 	@Test
 	public void testRemoveProductFromOrder() {
 		int orderId = storageSystem.addOrder("0003");
 		int productId = storageSystem.addProduct("Product2", "envelope");
-		storageSystem.addProductToOrder(orderId, productId);
+		storageSystem.addItemToOrder(orderId, productId, 20);
 		Order testOrder = storageSystem.getOrder(orderId);
 		Product testProduct = storageSystem.getProduct(productId);
-		storageSystem.removeProductFromOrder(orderId, productId);
+		storageSystem.removeItemFromOrder(orderId, productId);
 
-		assertFalse(testOrder.getProducts().contains(testProduct));
+		assertFalse(testOrder.getItems().contains(testProduct));
 	}
 
 	@Test
@@ -242,7 +251,7 @@ public class StorageSystemTest {
 		int id = storageSystem.addProduct("Product3", "envelope");
 		Product testProduct = storageSystem.getProduct(id);
 		assertEquals(testProduct.getName(), "Product3");
-		assertEquals(testProduct.getName(), "envelope");
+		assertEquals(testProduct.getType(), "envelope");
 	}
 
 	@Test

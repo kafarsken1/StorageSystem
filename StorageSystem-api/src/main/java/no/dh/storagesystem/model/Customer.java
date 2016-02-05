@@ -3,6 +3,16 @@ package no.dh.storagesystem.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Thomas Iversen
  * @version $Id: Customer.java 20.10.2015 $
  */
+
+@Entity
+@Table(name = "customer", catalog = "test", uniqueConstraints = {
+		@UniqueConstraint(columnNames = "CUSTOMER_NAME")})
 @XmlRootElement(name = "customer")
 public class Customer
 {
@@ -82,6 +96,9 @@ public class Customer
     // Setters and getters
     // -------------------------------------------------------------------------
 
+    @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "CUSTOMER_ID", unique = true, nullable = false)
     public int getId()
     {
         return id;
@@ -92,6 +109,7 @@ public class Customer
         this.id = id;
     }
 
+    @Column(name = "CUSTOMER_NAME", unique = true, nullable = false, length = 20)
     public String getName()
     {
         return name;
@@ -102,6 +120,7 @@ public class Customer
         this.name = name;
     }
 
+    @Column(name = "CUSTOMER_PHONE", unique = false, nullable = true, length = 12)
     public String getPhone()
     {
         return phone;
@@ -112,6 +131,7 @@ public class Customer
         this.phone = phone;
     }
     
+    @Column(name = "CUSTOMER_ADDRESS", unique = false, nullable = true, length = 30)
     public String getAddress()
     {
         return address;
@@ -122,10 +142,9 @@ public class Customer
         this.address = address;
     }
     
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="customer")
     public Set<Order> getOrders()
     {
-        //attendants = new HashSet<Student>( attendants ); // Rehash hack
-
         return orders;
     }
 

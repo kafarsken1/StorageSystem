@@ -54,9 +54,9 @@ public class BaseController {
 			int p2 = storageSystem.addProduct("Product 2", "envelope");
 			int p3 = storageSystem.addProduct("Product 3", "envelope");
 			
-			storageSystem.addProductToOrder(o0001, p1);
-			storageSystem.addProductToOrder(o0001, p2);
-			storageSystem.addProductToOrder(o0002, p3);
+			storageSystem.addItemToOrder(o0001, p1, 20);
+			storageSystem.addItemToOrder(o0001, p2, 4);
+			storageSystem.addItemToOrder(o0002, p3, 10);
 			storageSystem.addOrderToCustomer(john, o0001);
 			storageSystem.addOrderToCustomer(jane, o0002);
 
@@ -144,13 +144,14 @@ public class BaseController {
 	}
 	
 	@RequestMapping(value = "/order/{orderId}/product", method = RequestMethod.POST)
-	public String addProductToOrder(ModelMap model,
+	public String addItemToOrder(ModelMap model,
 			@PathVariable("orderId") int orderId,
-			@RequestParam("productid") int productId) {
+			@RequestParam("productid") int productId,
+			@RequestParam("quantity") int quantity) {
 
 		logger.debug("Adding product " + productId + " to order "
-				+ orderId);
-		storageSystem.addProductToOrder(orderId, productId);
+				+ orderId + " with quantity " + quantity);
+		storageSystem.addItemToOrder(orderId, productId, quantity);
 		populateModel(model);
 		return "order";
 	}
@@ -162,7 +163,7 @@ public class BaseController {
 
 		logger.debug("Removing product " + productId + " from order "
 				+ orderId);
-		storageSystem.removeProductFromOrder(orderId, productId);
+		storageSystem.removeItemFromOrder(orderId, productId);
 		populateModel(model);
 		return "order";
 	}

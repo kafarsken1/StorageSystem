@@ -14,10 +14,9 @@
 		<property name="phone" column="phone" not-null="false" unique="false"/>
 		<property name="address" column="address" not-null="false" unique="false"/>
 	
-		<set name="orders" table="customer_orders" lazy="false">
-			<key column="customer_id" />
-			<many-to-many column="order_id"
-				class="no.dh.storagesystem.model.Order" />
+		<set name="orders" table="customer_orders" inverse="true" lazy="true" fetch="select">
+			<key column="order_id" not-null="false" />
+			<one-to-many class="no.dh.storagesystem.model.Order" />
 		</set>
 	</class>
 </hibernate-mapping>

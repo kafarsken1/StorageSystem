@@ -1,4 +1,5 @@
-no\dh\storagesystem\dao\hibernate\HibernateCourseDAO.class
-no\dh\storagesystem\dao\hibernate\HibernateDegreeDAO.class
-no\dh\storagesystem\dao\hibernate\HibernateStudentDAO.class
-no\dh\storagesystem\service\impl\DefaultStudentSystem.class
+no\dh\storagesystem\dao\hibernate\HibernateCustomerDAO.class
+no\dh\storagesystem\service\impl\DefaultStorageSystem.class
+no\dh\storagesystem\dao\hibernate\HibernateProductDAO.class
+no\dh\storagesystem\dao\hibernate\BaseDAO.class
+no\dh\storagesystem\dao\hibernate\HibernateOrderDAO.class
