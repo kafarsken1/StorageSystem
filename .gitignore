@@ -45,9 +45,13 @@ Temporary Items
 # Project
 *.class
 .settings
+/bin
 
 # Maven
 target/
+StorageSystem-api/target/
+StorageSystem-deliverable/target/
+StorageSystem-gui/target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

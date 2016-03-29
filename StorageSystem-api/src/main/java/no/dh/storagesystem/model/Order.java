@@ -14,10 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * @author Thomas Iversen
@@ -39,10 +40,22 @@ public class Order
     
     private Customer customer;
     
-    private Date date;
+    private Date created;
+    
+    private Date updated;
 
     private Set<Item> items = new HashSet<Item>();
+    
+ /*   @PrePersist
+    protected void onCreate() {
+      created = new Date();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+      updated = new Date();
+    }
+*/
 
     // -------------------------------------------------------------------------
     // Constructors
@@ -130,16 +143,30 @@ public class Order
     	this.customer = customer;
     }
     
-    @Column(name = "ORDER_DATE", columnDefinition="DATETIME")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getDate()
+    @Column(name = "CREATED_DATE", updatable = false)
+   // @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    public Date getCreated()
     {
-    	return date;
+    	return created;
     }
     
-    public void setDate( Date date )
+    public void setCreated( Date created )
     {
-    	this.date = date;
+    	this.created = created;
+    }
+    
+    @Column(name = "UPDATED_DATE", insertable = false)
+   // @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    public Date getUpdated()
+    {
+    	return updated;
+    }
+    
+    public void setUpdated( Date updated )
+    {
+    	this.updated = updated;
     }
 
     @ElementCollection(fetch = javax.persistence.FetchType.LAZY)

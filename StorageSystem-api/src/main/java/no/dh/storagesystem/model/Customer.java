@@ -35,7 +35,8 @@ public class Customer
      */
 
     private String name;
-    private String phone;   
+    private String phone;  
+    private String email;
     private String address; 
 
     @JsonIgnore
@@ -52,6 +53,14 @@ public class Customer
     public Customer( String name )
     {
         this.name = name;
+    }
+    
+    public Customer( String name, String phone, String email, String address )
+    {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
     }
 
     // -------------------------------------------------------------------------
@@ -129,6 +138,17 @@ public class Customer
     public void setPhone( String phone )
     {
         this.phone = phone;
+    }
+    
+    @Column(name = "CUSTOMER_EMAIL", unique = false, nullable = true, length = 30)
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail( String email )
+    {
+        this.email = email;
     }
     
     @Column(name = "CUSTOMER_ADDRESS", unique = false, nullable = true, length = 30)

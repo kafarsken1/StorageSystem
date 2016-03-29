@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import no.dh.storagesystem.model.Customer;
+import no.dh.storagesystem.model.File;
 import no.dh.storagesystem.model.Order;
 import no.dh.storagesystem.model.Product;
 
@@ -17,9 +18,12 @@ public interface StorageSystem
      * Adds a customer.
      * 
      * @param name the name of the customer to add.
-     * @return the generated id of the added course.
+     * @param phone the phone of the customer to add.
+     * @param email the email of the customer to add.
+     * @param address the address of the customer to add.
+     * @return the generated id of the added customer.
      */
-    int addCustomer( String name );
+    int addCustomer( String name, String phone, String email, String address );
 
     /**
      * Updates a customer.
@@ -29,7 +33,7 @@ public interface StorageSystem
      * @param phone the phone of the customer to update.
      * @param address the address of the customer to update.
      */
-    void updateCustomer( int customerId, String name, String phone, String address );
+    void updateCustomer( int customerId, String name, String phone, String email, String address );
 
     /**
      * Returns a customer.
@@ -102,7 +106,7 @@ public interface StorageSystem
      * @param Customer the customer of the order to update.
      * @param date the date of the order to update.
      */
-    void updateOrder( int orderId, String orderNo, Customer customer, Date date );
+    void updateOrder( int orderId, String orderNo, Customer customer);
 
     /**
      * Returns an order.
@@ -230,10 +234,37 @@ public interface StorageSystem
     void delProduct( int productId );
     
     /**
+     * Returns a file.
+     * 
+     * @param fileId the id of the file to return.
+     * @return the file or null if it doesn't exist.
+     */
+    File getFile( int fileId );
+    
+    /**
+     * Adds a file.
+     * 
+     * @param name the name of the file to add.
+     * @param format the format of the file to add.
+     * @param data the data of the file to add
+     * @return the generated id of the added product.
+     */
+    int addFile( String name, String format, byte[] data );
+    
+    /**
      * Returns files with a specific product.
      * 
      * @return files or an empty Collection if no files exists.
      */
-    Collection<Order> getFilesByProduct( Product product);
+    Collection<File> getFilesByProduct( Product product );
+    
+    /**
+     * Removes all references to the file from product and deletes the
+     * file.
+     * 
+     * @param fileId the id of the file to delete.
+     */
+        
+    void delFile( int fileId );
 
 }

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 
 import no.dh.storagesystem.service.StorageSystem;
@@ -37,15 +36,15 @@ public class StorageSystemTest {
 
 	@Test
 	public void testAddCustomer() {
-		int id = storageSystem.addCustomer("User");
+		int id = storageSystem.addCustomer("User", "12345678", "test@test.no", "Street 1");
 		Customer testCustomer = storageSystem.getCustomer(id);
 		assertEquals(testCustomer.getName(), "User");
 	}
 
 	@Test
 	public void testUpdateCustomer() {
-		int id = storageSystem.addCustomer("User1");
-		storageSystem.updateCustomer(id, "User2", "12345678", "Street 1");
+		int id = storageSystem.addCustomer("User1", "12345678", "test@test.no", "Street 1");
+		storageSystem.updateCustomer(id, "User2", "12345678", "test1@test.no", "Street 1");
 		Customer testCustomer = storageSystem.getCustomer(id);
 		assertEquals(testCustomer.getName(), "User2");
 		assertEquals(testCustomer.getPhone(), "12345678");
@@ -54,22 +53,22 @@ public class StorageSystemTest {
 
 	@Test
 	public void testGetCustomer() {
-		int id = storageSystem.addCustomer("User3");
+		int id = storageSystem.addCustomer("User3", "12345678", "test@test.no", "Street 1");
 		Customer testCustomer = storageSystem.getCustomer(id);
 		assertEquals(testCustomer.getName(), "User3");
 	}
 
 	@Test
 	public void testGetCustomerByName() {
-		storageSystem.addCustomer("User4");
+		storageSystem.addCustomer("User4", "12345678", "test@test.no", "Street 1");
 		Customer testCustomer = storageSystem.getCustomerByName("User4");
 		assertEquals(testCustomer.getName(), "User4");
 	}
 
 	@Test
 	public void testGetCustomerByPhone() {
-		int id = storageSystem.addCustomer("User5");
-		storageSystem.updateCustomer(id, "User5", "12345678", "Street 2");
+		int id = storageSystem.addCustomer("User5", "12345678", "test@test.no", "Street 1");
+		storageSystem.updateCustomer(id, "User5", "12345678", "test@test.no", "Street 2");
 		Customer testCustomer = storageSystem.getCustomerByPhone("12345678");
 		assertEquals(testCustomer.getName(), "User5");
 		assertEquals(testCustomer.getPhone(), "12345678");
@@ -77,9 +76,9 @@ public class StorageSystemTest {
 
 	@Test
 	public void testGetAllCustomers() {
-		int id = storageSystem.addCustomer("User6");
-		int id1 = storageSystem.addCustomer("User7");
-		int id2 = storageSystem.addCustomer("User8");
+		int id = storageSystem.addCustomer("User6", "12345678", "test@test.no", "Street 1");
+		int id1 = storageSystem.addCustomer("User7", "12345678", "test@test.no", "Street 1");
+		int id2 = storageSystem.addCustomer("User8", "12345678", "test@test.no", "Street 1");
 		Customer testCustomer = storageSystem.getCustomer(id);
 		Customer testCustomer1 = storageSystem.getCustomer(id1);
 		Customer testCustomer2 = storageSystem.getCustomer(id2);
@@ -91,14 +90,14 @@ public class StorageSystemTest {
 
 	@Test
 	public void testDelCustomer() {
-		int id = storageSystem.addCustomer("User9");
+		int id = storageSystem.addCustomer("User9", "12345678", "test@test.no", "Street 1");
 		storageSystem.delCustomer(id);
 		assertNull(storageSystem.getCustomer(id));
 	}
 
 	@Test
 	public void testAddOrderToCustomer() {
-		int customerId = storageSystem.addCustomer("User10");
+		int customerId = storageSystem.addCustomer("User10", "12345678", "test@test.no", "Street 1");
 		int orderId = storageSystem.addOrder("1234");
 		storageSystem.addOrderToCustomer(customerId, orderId);
 		Customer testCustomer = storageSystem.getCustomer(customerId);
@@ -110,7 +109,7 @@ public class StorageSystemTest {
 
 	@Test
 	public void testRemoveOrderFromCustomer() {
-		int customerId = storageSystem.addCustomer("User11");
+		int customerId = storageSystem.addCustomer("User11", "12345678", "test@test.no", "Street 1");
 		int orderId = storageSystem.addOrder("12345");
 		storageSystem.addOrderToCustomer(customerId, orderId);
 		Customer testCustomer = storageSystem.getCustomer(customerId);
@@ -131,14 +130,12 @@ public class StorageSystemTest {
 	@Test
 	public void testUpdateOrder() {
 		int id = storageSystem.addOrder("12345");
-		int customerId = storageSystem.addCustomer("User12");
+		int customerId = storageSystem.addCustomer("User12", "12345678", "test@test.no", "Street 1");
 		Customer customer = storageSystem.getCustomer(customerId);
-		Date date = new Date();
-		storageSystem.updateOrder(id, "54321", customer, date);
+		storageSystem.updateOrder(id, "54321", customer);
 		Order testOrder = storageSystem.getOrder(id);
 		assertEquals(testOrder.getOrderNo(), "54321");
 		assertEquals(testOrder.getCustomer(), customer);
-		assertEquals(testOrder.getDate(), date);
 	}
 
 	@Test
@@ -157,14 +154,14 @@ public class StorageSystemTest {
 	
 	@Test
 	public void testGetOrdersByCustomer() {
-		int cid = storageSystem.addCustomer("User13");
+		int cid = storageSystem.addCustomer("User13", "12345678", "test@test.no", "Street 1");
 		Customer customer = storageSystem.getCustomer(cid);
 		int id = storageSystem.addOrder("123456");
-		storageSystem.updateOrder(id, "123456", customer, null);
+		storageSystem.updateOrder(id, "123456", customer);
 		int id2 = storageSystem.addOrder("1234567");
-		storageSystem.updateOrder(id2, "1234567", customer, null);
+		storageSystem.updateOrder(id2, "1234567", customer);
 		int id3 = storageSystem.addOrder("12345678");
-		storageSystem.updateOrder(id3, "12345678", customer, null);
+		storageSystem.updateOrder(id3, "12345678", customer);
 		Order order1 = storageSystem.getOrder(id);
 		Order order2 = storageSystem.getOrder(id2);
 		Order order3 = storageSystem.getOrder(id3);
@@ -175,7 +172,7 @@ public class StorageSystemTest {
 		assertTrue(orders.contains(order3));
 	}
 	
-	@Test
+/*	@Test
 	public void testGetOrdersByDate() {
 		Date date = new Date();
 		int id = storageSystem.addOrder("123456");
@@ -183,7 +180,7 @@ public class StorageSystemTest {
 		int id2 = storageSystem.addOrder("1234567");
 		storageSystem.updateOrder(id2, "1234567", null, date);
 		int id3 = storageSystem.addOrder("12345678");
-		storageSystem.updateOrder(id3, "12345678", null, date);
+		storageSystem.updateOrder(id3, "12345678", date);
 		Order order1 = storageSystem.getOrder(id);
 		Order order2 = storageSystem.getOrder(id2);
 		Order order3 = storageSystem.getOrder(id3);
@@ -193,7 +190,7 @@ public class StorageSystemTest {
 		assertTrue(orders.contains(order2));
 		assertTrue(orders.contains(order3));
 	}
-
+*/
 	@Test
 	public void testGetAllORders() {
 		int id = storageSystem.addOrder("123456");

@@ -48,7 +48,7 @@ public class HibernateOrderDAO extends BaseDAO implements OrderDAO{
 	@Override
 	public Collection<Order> getOrdersByDate(Date date) {
 		Criteria criteria = getSession().createCriteria(Order.class);
-		criteria.add(Restrictions.eq("date", date));
+		criteria.add(Restrictions.eq("created", date));
 		return criteria.list();
 	}
 

@@ -39,7 +39,7 @@ public class OrderDAOTest {
 		customerDAO.saveCustomer(testCustomer);
 		testOrder.setCustomer(testCustomer);
 		date = new Date();
-		testOrder.setDate(date);
+	//	testOrder.setDate(date);
 		id = orderDAO.saveOrder(testOrder);
 	}
 	

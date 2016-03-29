@@ -13,11 +13,7 @@
 <!-- Bootstrap core CSS -->
 <link href="css/bootstrap.css" rel="stylesheet">
 
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-      <script src="/StorageSystem-gui/js/html5shiv.js"></script>
-      <script src="/StorageSystem-gui/js/respond.min.js"></script>
-    <![endif]-->
+
 <style>
 html,body {
 	height: 100%;
@@ -44,15 +40,16 @@ html,body {
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/StorageSystem-gui/">Student system</a>
+				<a class="navbar-brand" href="/StorageSystem-gui/">Storage system</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="student">Students</a></li>
-					<li><a href="course">Courses</a></li>
-					<li><a href="degree">Degrees</a></li>
-					<li class="active"><a
-						href="${pageContext.request.contextPath}/">Location</a></li>
+					<li><a href="customer">Customers</a></li>
+					<li><a href="order">Orders</a></li>
+					<li><a href="product">Products</a></li>
+				<!--  	<li class="active"><a
+						href="${pageContext.request.contextPath}/">Customers</a></li>
+						-->
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="active"><a href="init">Init database</a></li>
@@ -65,56 +62,17 @@ html,body {
 	</div>
 
 
-	<div class="container">
 
-		<h1>Students</h1>
-		<p class="lead text-danger"></p>
 
-		<table class="table" id="studentTable">
-			<tr>
-				<th>Student</th>
-				<th>Courses</th>
-				<th>Location</th>
-			</tr>
-		</table>
-
-	</div>
-
-	<div class="container">
-
-		<form id="studentlocationform" name="studentlocationform">
-			<table class="table" id="studentLocationTable">
-			</table>
-			<table class="table">
-				<tr>
-					<td><input id="locationbtn" class="btn btn-primary"
-						type="button" value="Set location"></td>
-				</tr>
-			</table>
-		</form>
-
-	</div>
-
-	<div id="map-canvas" class="container map"></div>
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
 
-	<script src="http://modernizr.com/downloads/modernizr-latest.js"></script>
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/assignment.js"></script>
-	<script
-		src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<script src="js/storagesystem.js"></script>
 
-	<script>
-		$(document).ready(function() {
-			getStudentData();
-			initialize_map();
-		});
-	</script>
 
 </body>
 </html>

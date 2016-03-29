@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,6 +24,7 @@ public class File {
 	private String name;
 	private String format;
 	private byte[] data;
+	private Product product;
 	
 	// -------------------------------------------------------------------------
     // Constructors
@@ -126,6 +128,17 @@ public class File {
     public void setData( byte[] data )
     {
     	this.data = data;
+    }
+    
+    @ManyToOne
+    public Product getProduct()
+    {
+    	return product;
+    }
+    
+    public void setProduct( Product product )
+    {
+    	this.product = product;
     }
     
 }

@@ -186,7 +186,7 @@ public class Product
         this.shelfSpace = shelfSpace;
     }
     
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="product")
     public Set<File> getFiles()
     {
         return files;

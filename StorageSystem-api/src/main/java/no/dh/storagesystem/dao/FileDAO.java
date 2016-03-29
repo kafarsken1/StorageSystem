@@ -1,6 +1,9 @@
 package no.dh.storagesystem.dao;
 
+import java.util.Collection;
+
 import no.dh.storagesystem.model.File;
+import no.dh.storagesystem.model.Product;
 
 /**
  * @author Thomas Iversen
@@ -16,7 +19,7 @@ public interface FileDAO {
      * @param file the file to add for persistence.
      * @return the id of the file.
      */
-    int saveCustomer( File file );
+    int saveFile( File file );
     
     /**
      * Returns a file.
@@ -25,6 +28,14 @@ public interface FileDAO {
      * @return the file or null if it doesn't exist.
      */
     File getFile( int id );
+    
+    /**
+     * Returns all files with a specific product.
+     * 
+     * @param product the product of the files to return.
+     * @return the files or null if it doesn't exist.
+     */
+    Collection<File> getFilesByProduct( Product product );
     
     /**
      * Deletes a file.

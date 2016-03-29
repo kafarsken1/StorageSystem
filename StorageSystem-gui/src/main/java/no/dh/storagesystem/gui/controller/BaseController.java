@@ -45,8 +45,8 @@ public class BaseController {
 			model.addAttribute("message",
 					"Error filling in data. storageSystem == null");
 		} else {
-			int john = storageSystem.addCustomer("John McClane");
-			int jane = storageSystem.addCustomer("Jane Fonda");
+			int john = storageSystem.addCustomer("John McClane","12345678", "test@test.no", "Street 1");
+			int jane = storageSystem.addCustomer("Jane Fonda", "12345678", "test@test.no", "Street 1");
 			int o0001 = storageSystem.addOrder("0001");
 			int o0002 = storageSystem.addOrder("0002");
 
@@ -77,10 +77,13 @@ public class BaseController {
 	}
 
 	@RequestMapping(value = "/customer/new", method = RequestMethod.POST)
-	public String createStudent(ModelMap model,
-			@RequestParam("name") String name) {
+	public String createCustomer(ModelMap model,
+			@RequestParam("name") String name,
+			@RequestParam("phone") String phone,
+			@RequestParam("email") String email,
+			@RequestParam("address") String address) {
 
-		storageSystem.addCustomer(name);
+		storageSystem.addCustomer(name, phone, email, address);
 		populateModel(model);
 		return "customer";
 	}
